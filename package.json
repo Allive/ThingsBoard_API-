@@ -1,0 +1,28 @@
+{
+  "name": "thingsboard_api",
+  "version": "0.0.2b",
+  "description": "alpha Thingsboard REST API implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://84.201.141.244:19900/aivanov/thingsboard_api.git"
+  },
+  "keywords": [
+    "Thingsboard",
+    "TB",
+    "API",
+    "REST",
+    "2050"
+  ],
+  "author": "allive",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.0"
+  }
+}
