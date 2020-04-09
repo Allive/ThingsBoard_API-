@@ -84,8 +84,32 @@ async function getObjectID(name,type){
     return id
 }
 
-async function objectIDandKeys(name,type,keys){
+async function getAllObjectKeys(id,type){
+  var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/"+type.toUpperCase()+"/"+id+"/keys/attributes"
+
+  let getObjectKeys = await fetch(url,{
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
+    }
+  });
+  var ans = await getObjectKeys.json();
+  return ans
+}
+ /**
+ * If keys - null - trying to get all attributes
+ * @param {String} name
+ * @param {String} type
+ * @param {String} keys
+ */
+ async function objectIDandKeys(name,type,keys){
   var id = await getObjectID(name,type);
+
+  if(keys == null)
+    keys = await getAllObjectKeys(id,type)
+
+
   var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/"+type.toUpperCase()+"/"+id+"/values/attributes?keys="+keys
 
   let getObjectAttrs = await fetch(url,{
@@ -109,6 +133,9 @@ async function objectIDandKeys(name,type,keys){
 
 
 async function getObjectKeys(id,type,keys){
+  if(keys == null)
+    keys = await getAllObjectKeys(id,type)
+
   var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/"+type.toUpperCase()+"/"+id+"/values/attributes?keys="+keys
 
   let getObjectAttrs = await fetch(url,{
@@ -154,9 +181,7 @@ async function allObjectsIDbyType(type,entity_type){
     var ans = await getAllObjectsID.json();
     ans = ans.data
     var result =[]
-    console.log(ans)
     for(let i=0; i<ans.length;i++){
-      console.log(ans[i])
       result.push({
         id: ans[i].id.id,
         name: ans[i].name,
@@ -167,6 +192,12 @@ async function allObjectsIDbyType(type,entity_type){
   return result
 }
 
+/**
+ * If keys - null - trying to get all attributes
+ * @param {String} name
+ * @param {String} type
+ * @param {String} keys
+ */
 async function allObjectsIDandKeysByType(type,entity_type,keys){
   var ids = await allObjectsIDbyType(type,entity_type)
   result = []

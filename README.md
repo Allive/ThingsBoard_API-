@@ -74,6 +74,7 @@ Result
 List of options:
 ```json
 (name, type, keys) //string. for keys can be array
+//If keys == null - Trying to get all attributes!
 ```
 
 Usage
@@ -132,7 +133,8 @@ Result
 
 List of options:
 ```json
-(type, entity_type, keys) //string. type - custom type, entity_type - ASSET/DEVICE/ENTITY_VIEW. For keys - can be array
+(type, entity_type, keys) //string. type - custom type, entity_type - ASSET/DEVICE/ENTITY_VIEW. For keys - can be array.
+//If keys == null - Trying to get all attributes!
 ```
 
 Usage

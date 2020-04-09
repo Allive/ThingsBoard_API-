@@ -1,6 +1,6 @@
 {
   "name": "thingsboard_api",
-  "version": "0.0.2b",
+  "version": "0.0.3",
   "description": "alpha Thingsboard REST API implementation",
   "main": "index.js",
   "scripts": {
