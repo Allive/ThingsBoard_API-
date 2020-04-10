@@ -1,0 +1,4 @@
+Added Postgres functiones
+
+[postgres.get.allObjectsIDbyType - Promise get all object's ID by its name and "custom type",type](https://www.npmjs.com/package/thingsboard_api#postgresgetallobjectsidbytype---promise-get-all-objects-id-by-its-name-and-custom-typetype)
+[postgres.get.allObjectsIDandKeysByType - Promise get all object's ID and attributes by its name and "custom type",type and keys](https://www.npmjs.com/package/thingsboard_api#postgresgetallobjectsidandkeysbytype---promise-get-all-objects-id-and-attributes-by-its-name-and-custom-typetype-and-keys)
