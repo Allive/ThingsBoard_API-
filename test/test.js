@@ -5,8 +5,9 @@ async function main(){
         TB_PORT:'8080',
         TB_USERNAME:'kp@2050.digital',
         TB_PASSWORD:'aPb79AsA',
-        POSTGRES_USERNAME: "postgres",
         POSTGRES_HOST:"84.201.141.244",
+        POSTGRES_PORT:"5432",
+        POSTGRES_USERNAME: "postgres",
         POSTGRES_PASSWORD:"postgres123456"
     }
     await TB.createConnection(options)
