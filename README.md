@@ -1,5 +1,5 @@
 # Thingboard API
-Basic auth and get functions for Thingsboard REST API.
+Basic auth and get functions for Thingsboard REST API && Thingsboard's Postgres DB.
 Promise like implementation
 
 
@@ -13,10 +13,15 @@ npm i thingsboard_api
 ```js
 var TB = require('thingsboard_api');
 var options = {
-    TB_HOST:{ip_to_TB},       //default: localhost
-    TB_PORT:{port_to_TB},     //default: 8080
-    TB_USERNAME:{loginTB},    //default: tenant@thingboard.org
-    TB_PASSWORD:{passTB},     //default: tenant 
+    TB_HOST:            'ip_to_TB',         //default: localhost
+    TB_PORT:            'port_to_TB',       //default: 8080
+    TB_USERNAME:        'loginTB',          //default: tenant@thingboard.org
+    TB_PASSWORD:        'passTB',           //default: tenant 
+    POSTGRES_HOST:      'ip_to_Postgres',   //no defaults!
+    POSTGRES_PORT:      'port_to_Postgres', //no defaults!
+    POSTGRES_USERNAME:  'loginPostgres',    //no defaults!
+    POSTGRES_PASSWORD:  'loginPostgres',    //no defaults!
+
 }
 
 async function main(){
@@ -30,17 +35,22 @@ main()
 ```
 
 
-## List Functions
+# List REST API Functions
 
-### createConnection() - Promise connection with TB creating. Starting crone for token update every 15 minutes. Run once at start
+### createConnection() - Promise connection with TB creating. Starting crone for token update every 15 minutes. NEED IN run once at start!
 
 List of options:
-```
+``` js
 options = {
-    TB_HOST:{ip_to_TB},       //default: localhost
-    TB_PORT:{port_to_TB},     //default: 8080
-    TB_USERNAME:{loginTB},    //default: tenant@thingboard.org
-    TB_PASSWORD:{passTB},     //default: tenant 
+    TB_HOST:            'ip_to_TB',         //default: localhost
+    TB_PORT:            'port_to_TB',       //default: 8080
+    TB_USERNAME:        'loginTB',          //default: tenant@thingboard.org
+    TB_PASSWORD:        'passTB',           //default: tenant 
+    POSTGRES_HOST:      'ip_to_Postgres',   //no defaults!
+    POSTGRES_PORT:      'port_to_Postgres', //no defaults!
+    POSTGRES_USERNAME:  'loginPostgres',    //no defaults!
+    POSTGRES_PASSWORD:  'loginPostgres',    //no defaults!
+
 }
 ```
 
@@ -160,6 +170,75 @@ Result
         id: "0b507930-78d2-11ea-a1c7-d1e730c27b32", 
         name: "name2", 
         type: "device",
+        key1: "value1",
+        key2: "value2"
+    }
+]
+```
+
+# List Postgres Functions
+
+### postgres.get.allObjectsIDbyType() - Promise get all object's ID by its name and "custom type",type
+
+List of options:
+```json
+(type, entity_type) //string. type - custom type, entity_type - ASSET/DEVICE/ENTITY_VIEW
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+var allObjectsID = await TB.postgres.get.allObjectsIDbyType('device_type', 'device')
+
+```
+Result
+```js
+[
+    {
+        id: "0b507930-78d2-11ea-a1c7-d1e730c27b32", 
+        entity_name: "name1", 
+        type: "device_type"
+    },
+
+    {
+        id: "0b507930-78d2-11ea-a1c7-d1e730c27b32", 
+        entity_name: "name2", 
+        type: "device_type"
+    }
+]
+```
+
+### postgres.get.allObjectsIDandKeysByType() - Promise get all object's ID and attributes by its name and "custom type",type and keys
+
+List of options:
+```json
+(type, entity_type, keys) //string. type - custom type, entity_type - ASSET/DEVICE/ENTITY_VIEW. For keys - can be array.
+//If keys == null - Trying to get all attributes!
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+let keys = ['key1','key2','key3']
+var allObjectsIDandAttrs = await TB.postgres.get.allObjectsIDandKeysByType('device_type', 'device',keys)
+
+```
+
+Result
+```js
+[
+    {
+        entity_id: "0b507930-78d2-11ea-a1c7-d1e730c27b32", 
+        entity_name: "name1", 
+        entity_type: "device",
+        key1: "value1",
+        key2: "value2"
+    },
+
+    {
+        entity_id: "0b507930-78d2-11ea-a1c7-d1e730c27b32", 
+        entity_name: "name2", 
+        entity_type: "device",
         key1: "value1",
         key2: "value2"
     }
