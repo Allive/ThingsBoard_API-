@@ -31,11 +31,15 @@ function makeAttrsValuesObj(incomeAttrs){
     return outputObj;
 }
 
-function updateChildAttrsKeysValue(childAttributes, childId, childType){
+function updateChildAttrsKeysValue(incomeParentAttrs, childId, childType){
     // childAttributes is parent attributes that not existed before in child
     // before assign new attributes to child
     // change entity_id, entity_type and etc.
-    for (let val of childAttributes) {
+
+    // create deep copy
+    const childVals = JSON.parse(JSON.stringify(incomeParentAttrs));
+
+    for (let val of childVals) {
         val.entity_id = childId;
         val.entity_type = childType;
         val.bool_v = null;
@@ -45,7 +49,7 @@ function updateChildAttrsKeysValue(childAttributes, childId, childType){
         val.last_update_ts = Date.now();
     }
 
-    return childAttributes;
+    return childVals;
 }
 
 module.exports = {
