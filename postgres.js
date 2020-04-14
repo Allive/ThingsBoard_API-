@@ -41,7 +41,7 @@ function toPostgresID(tb_uuid) {
 async function getAttrsAndValuesById(entityId) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try {
-        var outputAttrs = await sql`SELECT entity_type, entity_id, attribute_type, attribute_key, bool_v, str_v, long_v, dbl_v, last_update_ts FROM attribute_kv where entity_id = ${entityId} ORDER BY attribute_key DESC`;
+        var outputAttrs = await sql`SELECT entity_type, entity_id, attribute_type, attribute_key, bool_v, str_v, long_v, dbl_v, last_update_ts FROM attribute_kv where entity_id = ${entityId} ORDER BY attribute_type DESC`;
     } catch (error) {
         console.error(error);
     }
