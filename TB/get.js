@@ -1,6 +1,8 @@
 const fetch = require('node-fetch');
 
 async function getObjectID(name,type){
+  if(name == null || type == null)
+    return false
   var name = encodeURI(name)
   switch(type.toUpperCase()){
     case "DEVICE": 
@@ -20,12 +22,16 @@ async function getObjectID(name,type){
         'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
       }
     });
-    ans = await response.json()
-    id = ans.id.id
-    return id
+    let ans = await response.json()
+    if(typeof ans.id != 'undefined')
+      return ans.id.id
+    else  
+      return false
 }
 
 async function getAllObjectKeys(id,type){
+  if(id == null || type == null || typeof type == 'undefined'|| typeof name == 'undefined')
+    return false
   var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/"+type.toUpperCase()+"/"+id+"/keys/attributes"
 
   let getObjectKeys = await fetch(url,{
@@ -45,6 +51,8 @@ async function getAllObjectKeys(id,type){
  * @param {String} keys
  */
  async function objectIDandKeys(name,type,keys){
+  if(id == null || type == null || typeof type == 'undefined'|| typeof name == 'undefined')
+      return false
   var id = await getObjectID(name,type);
 
   if(keys == null)
