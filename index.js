@@ -76,6 +76,7 @@ async function extendChildAttrs(options) {
 
     const parentAttrsValues = funcs.makeAttrsValuesObj(parentAttrs);
     const childAttrsValues = funcs.makeAttrsValuesObj(childAttrs);
+
     const parentKeys = Object.keys(parentAttrsValues);
 
     for (let parentKey of parentKeys) {
@@ -102,6 +103,23 @@ async function extendChildAttrs(options) {
             let dataToWrite = [];
             const parentData = parentAttrsValues[parentKey];
             const childData = childAttrsValues[parentKey];
+        
+            // UPDATE ATTRIBUTES IN PROGRESS
+            // switch(options.updateAttrs){
+            //     case true:
+            //         let i = 0;
+            //         let updatedAttrs = funcs.updateChildAttrsKeysValue(parentData, childId, childType);
+            //         for (let attr of updatedAttrs){
+            //             console.log(attr);
+            //             let resp = await postgres_api.updateAttrsKeysAndVals(childId, attr);
+            //             console.log('resp ', resp);
+            //         }
+
+            //         break;
+
+            // }
+
+            //  return;
 
             for (let i = 0; i < parentData.length; i++) {
                 let match = false;
@@ -115,6 +133,7 @@ async function extendChildAttrs(options) {
                     // Change parent properties to child
                     parentData[i].entity_id = childId;
                     parentData[i].entity_type = childType;
+                    parentData[i].last_update_ts = Date.now()
                     dataToWrite.push(parentData[i]);
                 }
             }
