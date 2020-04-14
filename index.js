@@ -13,16 +13,16 @@ const funcs = require('./functions');
 // process.env.POSTGRES_USERNAME = 'postgres'
 // process.env.POSTGRES_PASSWORD = 'postgres'
 
-async function createConnection(options){
-    process.env.TB_HOST  = options.TB_HOST;
+async function createConnection(options) {
+    process.env.TB_HOST = options.TB_HOST;
     process.env.TB_PORT = options.TB_PORT
     process.env.TB_USERNAME = options.TB_USERNAME;
     process.env.TB_PASSWORD = options.TB_PASSWORD;
-    process.env.POSTGRES_HOST  = options.POSTGRES_HOST;
+    process.env.POSTGRES_HOST = options.POSTGRES_HOST;
     process.env.POSTGRES_PORT = options.POSTGRES_PORT
     process.env.POSTGRES_USERNAME = options.POSTGRES_USERNAME;
     process.env.POSTGRES_PASSWORD = options.POSTGRES_PASSWORD;
-    TB_HOST  = process.env.TB_HOST;
+    TB_HOST = process.env.TB_HOST;
     TB_PORT = process.env.TB_PORT
     TB_USERNAME = process.env.TB_USERNAME;
     TB_PASSWORD = process.env.TB_PASSWORD;
@@ -30,43 +30,43 @@ async function createConnection(options){
     await postgres_api.createPostgresConnection();
 }
 
-async function token(){
+async function token() {
     var url = 'http://' + process.env.TB_HOST + ':' + process.env.TB_PORT + '/api/auth/login';
-  var options = {
-      method: 'post',
-      url: url,
-      data: {
-          "username": process.env.TB_USERNAME,
-          "password": process.env.TB_PASSWORD
-      },
-      headers: {
-          "Content-type": "application/json",
-          "Accept": "application/json"
-      }
-  };
+    var options = {
+        method: 'post',
+        url: url,
+        data: {
+            "username": process.env.TB_USERNAME,
+            "password": process.env.TB_PASSWORD
+        },
+        headers: {
+            "Content-type": "application/json",
+            "Accept": "application/json"
+        }
+    };
 
-  var token = await getAndSetToken(options);
-  cron.schedule("*/15 * * * *", async ()=>{
-      await getAndSetToken(options);
-  })
-  return token
+    var token = await getAndSetToken(options);
+    cron.schedule("*/15 * * * *", async () => {
+        await getAndSetToken(options);
+    })
+    return token
 
 }
 
 async function getAndSetToken(options) {
-  try {
-      const response = await axios(options);
-      
-      if (response.status === 200) {
-          process.env.TB_TOKEN = response.data.token;
-          return process.env.TB_TOKEN
-      }
-  } catch (error) {
-      console.error(error);
-  } 
+    try {
+        const response = await axios(options);
+
+        if (response.status === 200) {
+            process.env.TB_TOKEN = response.data.token;
+            return process.env.TB_TOKEN
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-async function extendChildAttrs(options){
+async function extendChildAttrs(options) {
     const parentId = postgres_api.toPostgresID(options.parent_id);
     const childId = postgres_api.toPostgresID(options.child_id);
     const childType = options.child_type;
@@ -87,15 +87,13 @@ async function extendChildAttrs(options){
             // set child entity_id, entity_type for extending attributes of child
             // set null to attributes which not existed before extending of attributes
             dataToWrite = funcs.updateChildAttrsKeysValue(dataToWrite, childId, childType);
-            try {
-                const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
 
-                if (result.count === dataToWrite.length) {
-                    console.log('successfully write to db!')
-                }
-            } catch (error) {
-                console.error("Insert into err: ", error)
+            const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
+
+            if (result.count === dataToWrite.length) {
+                console.log('successfully write to db!')
             }
+
             // child and parent have common attributes type SERVER_SCOPE and etc.
             // we need to find attribute_keys which not presented in child
         } else {
@@ -126,25 +124,21 @@ async function extendChildAttrs(options){
                 continue;
             }
 
-            console.log('Find attributes to assing to child !');
+            console.log('Find attributes to assign to child !');
             console.log('data to write ', dataToWrite)
-            try {
-                const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
 
-                if (result.count === dataToWrite.length) {
-                    console.log('successfully write to db!')
-                }
-            } catch (error) {
-                console.error("Insert into err: ", error)
+            const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
+
+            if (result.count === dataToWrite.length) {
+                console.log('successfully write to db!')
             }
-
         }
     }
 }
 module.exports = {
-  get:TB_get_api,
-  postgres: postgres_api,
-  token: token,
-  createConnection: createConnection,
-  extendChildAttrs: extendChildAttrs,
+    get: TB_get_api,
+    postgres: postgres_api,
+    token: token,
+    createConnection: createConnection,
+    extendChildAttrs: extendChildAttrs,
 };
