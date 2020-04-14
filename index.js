@@ -3,6 +3,7 @@ const axios = require('axios').default;
 const cron = require('node-cron');
 postgres_api = require('./postgres.js');
 TB_get_api = require('./TB/get.js');
+TB_push_api = require('./TB/push.js');
 TB_HOST = 'localhost'
 TB_PORT = '8080'
 TB_USERNAME = 'tenant@thingsboard.org'
@@ -31,7 +32,7 @@ async function createConnection(options){
 
 async function token(){
     var url = 'http://' + process.env.TB_HOST + ':' + process.env.TB_PORT + '/api/auth/login';
-  var options = {
+    var options = {
       method: 'post',
       url: url,
       data: {
@@ -67,6 +68,7 @@ async function getAndSetToken(options) {
 
 module.exports = {
   get:TB_get_api,
+  push:TB_push_api,
   postgres: postgres_api,
   token: token,
   createConnection: createConnection
