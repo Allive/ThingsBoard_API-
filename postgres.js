@@ -62,6 +62,20 @@ async function insertIntoAttrsKeysVals(dataToWrite) {
     return insertResponse;
 }
 
+// IN PROGRESS 
+// async function updateAttrsKeysAndVals(entityId, attributeObj) {
+//     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
+//     try {
+//         var updateResponse = await sql`update attribute_kv set ${
+//             sql(attributeObj, 'long_v')    
+//         } where entity_id = ${ attributeObj["entity_id"] }`;
+//     } catch (error) {
+//         console.error(error);
+//     }
+
+//     return updateResponse;
+// }
+
 async function getAllObjectsIDbyType(type, entity_type) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig)
 
@@ -147,6 +161,7 @@ module.exports =
     createPostgresConnection: createPostgresConnection,
     toPostgresID: toPostgresID,
     insertIntoAttrsKeysVals: insertIntoAttrsKeysVals,
+    // updateAttrsKeysAndVals: updateAttrsKeysAndVals,
     get: {
         allObjectsIDbyType: getAllObjectsIDbyType,
         allObjectsIDandKeysByType: getAllObjectsIDandKeysByType,
