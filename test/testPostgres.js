@@ -13,33 +13,24 @@ async function main(){
     await TB.createConnection(options)
     var keys = ["errors", 'hardware', 'inspectionType', 'label', 'locoType','measureID', 'milage','name','ts','warnings','worker']
 
-
     var startSQL = new Date()
     var allMeasuresFull_SQL_nullKeys = await TB.postgres.get.allObjectsIDandKeysByType('Замер','entity_view',null)
     var timeSQL_nullKeys = (new Date()-startSQL)/1000;
-
-    var startTB = new Date()
-    var allMeasuresFull_TB_nullKeys = await TB.get.allObjectsIDandKeysByType('Замер','entity_view',null)
-    var timeTB_nullKeys = (new Date()-startTB)/1000;
+    console.log(allMeasuresFull_SQL_nullKeys)
 
 
     var startSQL = new Date()
     var allMeasuresFull_SQL_allKeys = await TB.postgres.get.allObjectsIDandKeysByType('Замер','entity_view',keys)
     var timeSQL_allKeys = (new Date()-startSQL)/1000;
+    console.log(allMeasuresFull_SQL_allKeys)
 
-    var startTB = new Date()
-    var allMeasuresFull_TB_allKeys = await TB.get.allObjectsIDandKeysByType('Замер','entity_view',keys)
-    var timeTB_allKeys = (new Date()-startTB)/1000;
 
     var startSQL = new Date()
     var allMeasuresFull_SQL_oneKey = await TB.postgres.get.allObjectsIDandKeysByType('Замер','entity_view',"errors")
     var timeSQL_oneKey = (new Date()-startSQL)/1000;
+    console.log(allMeasuresFull_SQL_oneKey)
 
-    var startTB = new Date()
-    var allMeasuresFull_TB_oneKey = await TB.get.allObjectsIDandKeysByType('Замер','entity_view',"errors")
-    var timeTB_oneKey = (new Date()-startTB)/1000;
-
-
+    
 }
 
 main()
