@@ -7,13 +7,23 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Test",
+            "name": "Launch Postgres Test",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/test/test.js"
+            "program": "${workspaceFolder}/test/testPostgres.js"
         },
-    
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch TB get Test",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/test/testTB_get.js"
+        },
+
         {
             "type": "node",
             "request": "launch",

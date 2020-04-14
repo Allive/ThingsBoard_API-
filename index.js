@@ -67,7 +67,7 @@ async function getAndSetToken(options) {
 
 
 async function getObjectID(name,type){
-
+  var name = encodeURI(name)
   switch(type.toUpperCase()){
     case "DEVICE": 
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?deviceName="+name;
@@ -75,7 +75,7 @@ async function getObjectID(name,type){
     case "ASSET": 
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/assets?assetName="+name;
     break;
-    case "ENTITY_VIEW": entity_view
+    case "ENTITY_VIEW": 
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/entityViews?entityViewName="+name;
     break;
   }
@@ -207,7 +207,7 @@ async function allObjectsIDbyType(type,entity_type){
  */
 async function allObjectsIDandKeysByType(type,entity_type,keys){
   var ids = await allObjectsIDbyType(type,entity_type)
-  result = []
+  var result = []
   for(let i=0; i<ids.length; i++){
     let object = await getObjectKeys(ids[i].id,entity_type,keys)
     object.name = ids[i].name
