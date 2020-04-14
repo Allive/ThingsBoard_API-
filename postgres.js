@@ -25,6 +25,16 @@ function toUUID(id){
     return id;
 }
 
+// get postgres id from thingsboard uuid
+function toPostgresID(tb_uuid) {
+    id = tb_uuid.substring(15, 18) +
+        tb_uuid.substring(9, 13) +
+        tb_uuid.substring(0, 8) +
+        tb_uuid.substring(19, 23) +
+        tb_uuid.substring(24, tb_uuid.length)
+
+    return id;
+}
 
 async function getAllObjectsIDbyType(type,entity_type){
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig)
