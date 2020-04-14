@@ -69,6 +69,7 @@ async function getAndSetToken(options) {
 async function extendChildAttrs(options){
     const parentId = postgres_api.toPostgresID(options.parent_id);
     const childId = postgres_api.toPostgresID(options.child_id);
+    const childType = options.child_type;
 
     const parentAttrs = await postgres_api.get.getAttrsAndValuesById(parentId);
     const childAttrs = await postgres_api.get.getAttrsAndValuesById(childId);
@@ -82,19 +83,10 @@ async function extendChildAttrs(options){
         // the write new attribute_keys 
         if (!(childAttrsValues.hasOwnProperty(parentKey))) {
             console.log('child not have key: ', parentKey);
-
-            const dataToWrite = parentAttrsValues[parentKey];
+            let dataToWrite = parentAttrsValues[parentKey];
             // set child entity_id, entity_type for extending attributes of child
             // set null to attributes which not existed before extending of attributes
-            for (let val of dataToWrite) {
-                val.entity_id = childId;
-                val.entity_type = options.child_type;
-                val.bool_v = null;
-                val.str_v = null;
-                val.long_v = null;
-                val.dbl_v = null;
-                val.last_update_ts = Date.now();
-            }
+            dataToWrite = funcs.updateChildAttrsKeysValue(dataToWrite, childId, childType);
             try {
                 const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
 
@@ -124,7 +116,7 @@ async function extendChildAttrs(options){
                 if (!match) {
                     // Change parent properties to child
                     parentData[i].entity_id = childId;
-                    parentData[i].entity_type = options.child_type;
+                    parentData[i].entity_type = childType;
                     dataToWrite.push(parentData[i]);
                 }
             }
