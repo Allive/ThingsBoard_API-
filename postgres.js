@@ -62,19 +62,19 @@ async function insertIntoAttrsKeysVals(dataToWrite) {
     return insertResponse;
 }
 
-// IN PROGRESS 
-// async function updateAttrsKeysAndVals(entityId, attributeObj) {
-//     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
-//     try {
-//         var updateResponse = await sql`update attribute_kv set ${
-//             sql(attributeObj, 'long_v')    
-//         } where entity_id = ${ attributeObj["entity_id"] }`;
-//     } catch (error) {
-//         console.error(error);
-//     }
+// Update child attributes keys and values based on parent attributes
+async function updateAttrsKeysAndVals(attributeObj) {
+    const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
+    try {
+        var updateResponse = await sql`update attribute_kv set ${
+            sql(attributeObj, 'entity_type', 'entity_id', 'attribute_type', 'attribute_key', 'bool_v', 'str_v', 'long_v', 'dbl_v', 'last_update_ts')    
+        } where entity_id = ${ attributeObj["entity_id"] } and attribute_key = ${attributeObj.attribute_key}`;
+    } catch (error) {
+        console.error(error);
+    }
 
-//     return updateResponse;
-// }
+    return updateResponse;
+}
 
 async function getAllObjectsIDbyType(type, entity_type) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig)
@@ -161,7 +161,7 @@ module.exports =
     createPostgresConnection: createPostgresConnection,
     toPostgresID: toPostgresID,
     insertIntoAttrsKeysVals: insertIntoAttrsKeysVals,
-    // updateAttrsKeysAndVals: updateAttrsKeysAndVals,
+    updateAttrsKeysAndVals: updateAttrsKeysAndVals,
     get: {
         allObjectsIDbyType: getAllObjectsIDbyType,
         allObjectsIDandKeysByType: getAllObjectsIDandKeysByType,
