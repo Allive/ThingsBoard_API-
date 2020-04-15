@@ -245,18 +245,21 @@ Result
 ]
 ```
 
+___
 
-#### postgres.get.getAttrsAndValuesById(entity_id)
+#### postgres.get.getAttrsAndValuesById(entity_id) - get attributes keys and values for future assigning to child
 
 ##### Steps: 
  - convert Thingsboard UUID to Postgres entity_id
  - Use postgres.toPostgresID(thingsboard_uuid) for converting
 
 ##### List of options:
- - entity_id 
+ - entity_id - is `string`
 
 ##### Response:
 ```js
+[
+...,
  {
     entity_type: 'DEVICE',
     entity_id: '1e9fbe382c16090a0332dde0dc34203',
@@ -268,4 +271,73 @@ Result
     dbl_v: 0,
     last_update_ts: null
   },
+...
+]
 ```
+
+____
+
+
+#### postgres.toPostgresID(thingsboard_uuid) - convert Thingsboard UUID to Postgres ID
+
+##### List of options:
+ - thingsboard_uuid - `string`
+
+
+___
+
+#### postgres.insertIntoAttrsKeysVals(dataToWrite) - insert data into attribute_kv
+
+##### List of options:
+ - dataToWrite - is `array of objects`
+```js
+[
+  {
+    entity_type: 'DEVICE',
+    entity_id: '1ea6d07aaba34b094de3ddf86487a77',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'test_attr_key',
+    bool_v: null,
+    str_v: null,
+    long_v: null,
+    dbl_v: null,
+    last_update_ts: 1586949836446
+  },
+  {
+    entity_type: 'DEVICE',
+    entity_id: '1ea6d07aaba34b094de3ddf86487a77',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'Работа по программе',
+    bool_v: null,
+    str_v: null,
+    long_v: null,
+    dbl_v: null,
+    last_update_ts: 1586949836446
+  },
+]
+```
+
+##### Response
+ - To check if data was written to db `compare insert count with response count`
+
+___
+
+### postgres.updateAttrsKeysAndVals(attributeObj) - Update child attributes keys and values based on parent attributes
+
+##### List of options:
+ - attributeObj is  `object`
+```js
+  {
+    entity_type: 'DEVICE',
+    entity_id: '1ea6d07aaba34b094de3ddf86487a77',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'Работа по программе',
+    bool_v: null,
+    str_v: null,
+    long_v: null,
+    dbl_v: null,
+    last_update_ts: 1586949836446
+  }
+```
+##### Response
+ - To check if data was updated `compare target count with db update response count`
