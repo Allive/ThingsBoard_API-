@@ -12,7 +12,7 @@ async function main() {
         POSTGRES_USERNAME: config.parsed.PG_USERNAME,
         POSTGRES_PASSWORD: config.parsed.PG_PASSWORD,
         POSTGRES_DATABASE: config.parsed.PG_DATABASE,
-        "updateAttrs": true,
+        "updateAttrs": false,
     }
    await TB.createConnection(options);
    await TB.extendChildAttrs(options);
