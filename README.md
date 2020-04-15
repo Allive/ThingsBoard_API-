@@ -254,3 +254,18 @@ Result
 
 ##### List of options:
  - entity_id 
+
+##### Response:
+```js
+ {
+    entity_type: 'DEVICE',
+    entity_id: '1e9fbe382c16090a0332dde0dc34203',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'attribute_test_april2020',
+    bool_v: false,
+    str_v: '',
+    long_v: 0,
+    dbl_v: 0,
+    last_update_ts: null
+  },
+```
