@@ -244,3 +244,13 @@ Result
     }
 ]
 ```
+
+
+#### postgres.get.getAttrsAndValuesById(entity_id)
+
+##### Steps: 
+ - convert Thingsboard UUID to Postgres entity_id
+ - Use postgres.toPostgresID(thingsboard_uuid) for converting
+
+##### List of options:
+ - entity_id 
