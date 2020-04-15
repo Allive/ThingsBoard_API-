@@ -317,7 +317,7 @@ ___
 ]
 ```
 
-##### Response
+##### Response:
  - To check if data was written to db `compare insert count with response count`
 
 ___
@@ -339,5 +339,31 @@ ___
     last_update_ts: 1586949836446
   }
 ```
-##### Response
+##### Response:
  - To check if data was updated `compare target count with db update response count`
+
+
+# List of unclassified functions
+
+### extendChildAttrs(options) - Extend child attributes by parent attributes
+
+##### List of options:
+ - options is an `object`
+```js
+    parent_id": "82c16090-fbe3-11e9-a033-2dde0dc34203",
+    "child_id": "aaba34b0-6d07-11ea-94de-3ddf86487a77",
+    "child_type": "DEVICE",
+    POSTGRES_HOST: "host",
+    POSTGRES_PORT: "port",
+    POSTGRES_USERNAME: "username",
+    POSTGRES_PASSWORD: "pass",
+    POSTGRES_DATABASE: "database",
+    "updateAttrs": false,
+```
+
+##### Steps:
+ - If you want to add not existed attributes before to child set `updateAttrs` to `false`
+ - For updating child attributes by parents attributes set `updateAttrs` to `true`
+
+##### Reponse:
+ - Function doesn't return any data!
