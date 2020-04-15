@@ -1,19 +1,17 @@
 {
   "name": "thingsboard_api",
-  "version": "0.0.3a",
-  "description": "alpha Thingsboard REST API implementation",
+  "version": "1.0.0b",
+  "description": "Thingsboard REST API implementation",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://84.201.141.244:19900/aivanov/thingsboard_api.git"
-  },
+  
   "keywords": [
     "Thingsboard",
     "TB",
     "API",
+    "HTTP",
     "REST",
     "2050"
   ],

@@ -19,11 +19,16 @@ async function main(){
     }
     await TB.createConnection(options)
     var keys = ["errors", 'hardware', 'inspectionType', 'label', 'locoType','measureID', 'milage','name','ts','warnings','worker']
-
+/*
     var objectID = await TB.get.objectID("e5k",'asset')
     var objectIDandKeys = await TB.get.objectIDandKeys("Замер №1",'entity_view', null)
     var allObjectsIDbyType = await TB.get.allObjectsIDbyType("Локомотив","asset")
     var allObjectsIDandKeysByType = await TB.get.allObjectsIDandKeysByType("Замер","entity_view",keys)
+    */
+   //var related = await TB.get.relations("Замер №20&e5k:018-1", 'entity_view', 'to',1)
+   
+    var related = await TB.get.relations("Замер №20", 'entity_view', 'to',3) 
+
 }
 
 main()
