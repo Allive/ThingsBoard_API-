@@ -4,6 +4,32 @@ Promise like implementation
 
 
 
+<!-- TOC -->
+
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [List REST API Functions](#List-REST-API-Functions)
+    - [GET](#GET)
+        - [createConnection](#createConnection())
+        - [get.objectID()](#get.objectID())
+        - [get.objectIDandKeys()](#get.objectIDandKeys())
+        - [get.allObjectsIDbyType()](#get.allObjectsIDbyType())
+        - [get.allObjectsIDandKeysByType()](#get.allObjectsIDandKeysByType())
+    - [PUSH](#PUSH)
+        -[push.createRelation()](#push.createRelation())
+        -[push.pushAttributes()](#push.pushAttributes())
+        -[push.createEntity()](#push.createEntity())
+    - [DELETE](#DELETE)
+        - [delete.deleteEntity()](#delete.deleteEntity())
+        - [delete.deleteChilds()](#delete.deleteChilds())
+        - [delete.deleteEntitiesByType()](#delete.deleteEntitiesByType())
+- [List Postgres Functions](#List-Postgres-Functions)
+    - [postgres.get.allObjectsIDbyType()](#postgres.get.allObjectsIDbyType())
+    - [postgres.get.allObjectsIDandKeysByType()](#postgres.get.allObjectsIDandKeysByType())
+
+
+<!-- /TOC -->
+
 ## Installation
 ```bash
 npm i thingsboard_api
@@ -37,7 +63,10 @@ main()
 
 # List REST API Functions
 
-### createConnection() - Promise connection with TB creating. Starting crone for token update every 15 minutes. NEED IN run once at start!
+## GET
+
+### createConnection() 
+### Promise connection with TB creating. Starting crone for token update every 15 minutes. NEED IN run once at start!
 
 List of options:
 ``` js
@@ -62,7 +91,8 @@ await TB.createConnection(options)
 
 
 
-### get.objectID() - Promise get ID of an object by its name and type
+### get.objectID()
+### Promise get ID of an object by its name and type
 
 List of options:
 ```json
@@ -79,7 +109,8 @@ Result
 "ea791310-78d2-11ea-a1c7-d1e730c27b32"
 ```
 
-### get.objectIDandKeys() - Promise get ID and attributes of an object by its name,type and keys
+### get.objectIDandKeys()
+### Promise get ID and attributes of an object by its name,type and keys
 
 List of options:
 ```json
@@ -109,7 +140,8 @@ Result
 
 
 
-### get.allObjectsIDbyType() - Promise get all object's ID by its name and "custom type",type
+### get.allObjectsIDbyType()
+### Promise get all object's ID by its name and "custom type",type
 
 List of options:
 ```json
@@ -139,7 +171,8 @@ Result
 ]
 ```
 
-### get.allObjectsIDandKeysByType() - Promise get all object's ID and attributes by its name and "custom type",type and keys
+### get.allObjectsIDandKeysByType()
+### Promise get all object's ID and attributes by its name and "custom type",type and keys
 
 List of options:
 ```json
@@ -176,9 +209,148 @@ Result
 ]
 ```
 
+
+## PUSH
+
+### push.createRelation()
+
+List of options:
+```json
+(name, entity_view, parentName, parentType) //string
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+var createRelation = await TB.push.createRelation("myChild",'asset',"myParent",'asset')
+```
+Result
+```js
+true || false
+```
+
+### push.pushAttributes()
+
+List of options:
+```json
+(name,entity_type,attributes) //string
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+let attributes = {
+        key1: "value1",
+        key2: "value2",
+    }
+var pushAttributes = await TB.push.pushAttributes("myObject",'asset',attributes)
+```
+Result
+```js
+true || false
+```
+
+### push.createEntity()
+
+List of options:
+```json
+(name,type,attributes,entity_type,parentName,parentType,parentKeys,parentRelation)
+// attributes - can be null, if no attributes to push
+// parentName,parentType,parentKeys,parentRelation - can be null
+// so no relation or cloning attributes will be done
+//
+// parentKeys - array of name of keys to clone from parent to new Entity
+// parentRelation - boolean. If true - will call createRelation() to parentName
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+let attributes = {
+        key1: "value1",
+        key2: "value2",
+    }
+let parentKeys = ["keyTestParent","keyTestParent2"]
+
+var createEntity = await TB.push.createEntity("myAsset",'testType',attributes,"asset","ParentDevice","device",parentKeys,true))
+```
+Result
+```js
+id || false //if no relation and parentClonning
+
+{
+    id: id,
+    statusAttributes: true || false,
+    statusRelation: true || false,
+}
+```
+
+
+## DELETE
+
+### delete.deleteEntity()
+
+List of options:
+```json
+(name,entity_type,flagDeleteChilds) 
+// flagDeleteChilds - boolean, if true - will delete child entities in 3 level depth max
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+
+var deleteEntity = await TB.delete.deleteEntity("myOldObject",'asset',false)
+```
+Result
+```js
+true || false
+```
+
+### delete.deleteEntitiesByType()
+
+List of options:
+```json
+(type,entity_type) 
+
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+
+var deleteEntity = await TB.delete.deleteEntitiesByType("typeOfAssetsToDelete",'asset')
+```
+Result
+```js
+true || false
+```
+
+
+### delete.deleteEntitiesByType()
+
+Will delete entities, whose has relation to 'name' in 3 level depth max
+List of options:
+```json
+(name,entity_type) 
+
+```
+
+Usage
+```js
+var TB = require('thingsboard_api');
+
+var deleteChilds = await TB.delete.deleteChilds("Parent",'asset')
+```
+Result
+```js
+true || false
+```
+
 # List Postgres Functions
 
-### postgres.get.allObjectsIDbyType() - Promise get all object's ID by its name and "custom type",type
+### postgres.get.allObjectsIDbyType()
+### Promise get all object's ID by its name and "custom type",type
 
 List of options:
 ```json
@@ -208,7 +380,8 @@ Result
 ]
 ```
 
-### postgres.get.allObjectsIDandKeysByType() - Promise get all object's ID and attributes by its name and "custom type",type and keys
+### postgres.get.allObjectsIDandKeysByType()
+### Promise get all object's ID and attributes by its name and "custom type",type and keys
 
 List of options:
 ```json

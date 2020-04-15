@@ -167,6 +167,8 @@ async function allObjectsIDandKeysByType(type,entity_type,keys){
  * @param {Integer} level int if 0 or null - all levels 
  */
 async function getRelations(name, entity_type, direction, level){
+  if (level === 0)
+    level = 3
   var id = await getObjectID(name,entity_type)
   if(!id)
     return false
@@ -201,19 +203,18 @@ async function getRelations(name, entity_type, direction, level){
     return answer
   
   
-    for (let ii=level; ii>0; ii--){
-    for(let i=0; i< answer.length; i++){
-      answer[i].childs = []
-      
-      //console.log(answer[i])
-      answer[i].childs.push(await getRelations(answer[i].name,answer[i].entity_type,direction,ii))
-      //console.log(answer[i].childs )
+    /*
+      for(let i=0; i< answer.length; i++){
+        //answer[i].childs = []
+        for (let ii=level; ii>0; ii--){   
+        //console.log(answer[i])
+        answer[i].childs = await getRelations(answer[i].name,answer[i].entity_type,direction,ii)
+        //console.log(answer[i].childs )
+      }
     }
-    }
-
-  /*
+*/
+  
   for(let i=0; i< answer.length; i++){
-    console.log(answer[i].name)
     answer[i].childs = await getRelations(answer[i].name,answer[i].entity_type,direction,1)
   }
   
@@ -225,11 +226,7 @@ async function getRelations(name, entity_type, direction, level){
       answer[i].childs[ii].childs = await getRelations(answer[i].childs[ii].name,answer[i].childs[ii].entity_type,direction,1)
     }
   }
-  */ 
-      //}
-    //}
-
-    return answer
+  return answer
 }
 
 module.exports = {

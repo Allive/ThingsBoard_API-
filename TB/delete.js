@@ -25,19 +25,35 @@ async function deleteEntity(name,entity_type,flagDeleteChilds){
         return true
 
     var statusDeleteChilds = false
-    if(flagDeleteChilds){
-            statusDeleteChilds = await deleteChilds(name,entity_type)
-        }
+    if(flagDeleteChilds)
+        statusDeleteChilds = await deleteChilds(name,entity_type)
+    return true
 }
 
+async function deleteEntitiesByType(type,entity_type){
+    entity_type = entity_type.toLowerCase()
+    if(type == null || entity_type!='asset' || entity_type!='device' || entity_type!='entity_view')
+        return false
+
+    ids = get.allObjectsIDbyType(type,entity_type)
+    for(let i = 0; i < ids.length; i++){
+        var result = await deleteEntity(ids[i].name,ids[i].entity_type,false)
+    }
+    return result
+}
+
+
 async function deleteChilds(name,entity_type){
+
     var childs = await get.relations(name, entity_type, "to", 0)
     for (let i=0; i < childs.length; i++){
-        await deleteEntity(childs[i].name, childs[i].entity_type)
+        await deleteEntity(childs[i].name, childs[i].entity_type,false)
     }
+    return true
 }
 
 module.exports = {
-    deleteEntity:   deleteEntity,
-    deleteChilds:   deleteChilds,
+    deleteEntity:           deleteEntity,
+    deleteChilds:           deleteChilds,
+    deleteEntitiesByType:   deleteEntitiesByType
 };
