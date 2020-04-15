@@ -83,7 +83,7 @@ async function extendChildAttrs(options) {
         // get attribute_types which are not find in child
         // the write new attribute_keys 
         if (!(childAttrsValues.hasOwnProperty(parentKey))) {
-            console.log('child not have key: ', parentKey);
+            console.log('child does not have attribute type: ', parentKey);
             let dataToWrite = parentAttrsValues[parentKey];
             // set child entity_id, entity_type for extending attributes of child
             // set null to attributes which not existed before extending of attributes
@@ -98,58 +98,58 @@ async function extendChildAttrs(options) {
             // child and parent have common attributes type SERVER_SCOPE and etc.
             // we need to find attribute_keys which not presented in child
         } else {
-            console.log('have common attribute_type ', parentKey);
+            console.log('parent and child have common attribute type ', parentKey);
 
             let dataToWrite = [];
             const parentData = parentAttrsValues[parentKey];
             const childData = childAttrsValues[parentKey];
-        
-            // UPDATE ATTRIBUTES IN PROGRESS
-            // switch(options.updateAttrs){
-            //     case true:
-            //         let i = 0;
-            //         let updatedAttrs = funcs.updateChildAttrsKeysValue(parentData, childId, childType);
-            //         for (let attr of updatedAttrs){
-            //             console.log(attr);
-            //             let resp = await postgres_api.updateAttrsKeysAndVals(childId, attr);
-            //             console.log('resp ', resp);
-            //         }
 
-            //         break;
-
-            // }
-
-            //  return;
-
-            for (let i = 0; i < parentData.length; i++) {
-                let match = false;
-                for (let j = 0; j < childData.length; j++) {
-                    if (parentData[i].attribute_key.toString() === childData[j].attribute_key.toString()) {
-                        match = true;
-                        break;
+            // update attributes or assign new attributes to child
+            // depends on options.updateAttrs
+            switch (options.updateAttrs) {
+                case true:
+                    if (parentData.length !== childData.length){
+                        console.error("Different length of parent and child attribute array!");
+                        return;
                     }
-                }
-                if (!match) {
-                    // Change parent properties to child
-                    parentData[i].entity_id = childId;
-                    parentData[i].entity_type = childType;
-                    parentData[i].last_update_ts = Date.now()
-                    dataToWrite.push(parentData[i]);
-                }
-            }
+                    let updatedAttrs = funcs.updateChildAttrsKeysValue(parentData, childId, childType);
+                    for (let attr of updatedAttrs) {
+                        const resp = await postgres_api.updateAttrsKeysAndVals(attr);
+                        console.log('resp ', resp);
+                    }
+                    break;
+                case false:
+                default:
+                    for (let i = 0; i < parentData.length; i++) {
+                        let match = false;
+                        for (let j = 0; j < childData.length; j++) {
+                            if (parentData[i].attribute_key.toString() === childData[j].attribute_key.toString()) {
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (!match) {
+                            // Change parent properties to child
+                            parentData[i].entity_id = childId;
+                            parentData[i].entity_type = childType;
+                            parentData[i].last_update_ts = Date.now()
+                            dataToWrite.push(parentData[i]);
+                        }
+                    }
 
-            if (dataToWrite.length === 0) {
-                console.log('Not data to write! ');
-                continue;
-            }
+                    if (dataToWrite.length === 0) {
+                        console.log('Not data to write! ');
+                        continue;
+                    }
 
-            console.log('Find attributes to assign to child !');
-            console.log('data to write ', dataToWrite)
+                    console.log('Find attributes to assign to child !');
+                    console.log('data to write ', dataToWrite)
 
-            const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
+                    const result = await postgres_api.insertIntoAttrsKeysVals(dataToWrite);
 
-            if (result.count === dataToWrite.length) {
-                console.log('successfully write to db!')
+                    if (result.count === dataToWrite.length) {
+                        console.log('successfully write to db!')
+                    }
             }
         }
     }
