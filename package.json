@@ -6,10 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://84.201.141.244:19900/aivanov/thingsboard_api.git"
-  },
+  
   "keywords": [
     "Thingsboard",
     "TB",
