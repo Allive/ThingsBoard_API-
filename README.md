@@ -350,15 +350,17 @@ ___
 ##### List of options:
  - options is an `object`
 ```js
-    parent_id": "82c16090-fbe3-11e9-a033-2dde0dc34203",
-    "child_id": "aaba34b0-6d07-11ea-94de-3ddf86487a77",
-    "child_type": "DEVICE",
-    POSTGRES_HOST: "host",
-    POSTGRES_PORT: "port",
-    POSTGRES_USERNAME: "username",
-    POSTGRES_PASSWORD: "pass",
-    POSTGRES_DATABASE: "database",
-    "updateAttrs": false,
+{
+  parent_id": "82c16090-fbe3-11e9-a033-2dde0dc34203",
+  "child_id": "aaba34b0-6d07-11ea-94de-3ddf86487a77",
+  "child_type": "DEVICE",
+  "POSTGRES_HOST": "host",
+  "POSTGRES_PORT": "port",
+  "POSTGRES_USERNAME": "username",
+  "POSTGRES_PASSWORD": "pass",
+  "POSTGRES_DATABASE": "database",
+  "updateAttrs": "false"
+}
 ```
 
 ##### Steps:
