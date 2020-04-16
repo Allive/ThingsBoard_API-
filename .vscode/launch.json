@@ -27,6 +27,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch TB push Test",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/test/testTB_push.js"
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Program",
             "skipFiles": [
                 "<node_internals>/**"

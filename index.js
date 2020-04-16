@@ -160,6 +160,8 @@ async function pushTelemetry(options){
     const entityToken = await postgres_api.get.getEntityToken(options.entityId);
     console.log(entityToken);
 
+    
+
     return;
 }
 module.exports = {

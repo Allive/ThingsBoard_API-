@@ -1,7 +1,11 @@
 const fetch = require('node-fetch');
 
 async function getObjectID(name,type){
+  if(name == null || type == null)
+    return false
+  
   var name = encodeURI(name)
+  name = name.replace("&","%26")
   switch(type.toUpperCase()){
     case "DEVICE": 
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?deviceName="+name;
@@ -20,12 +24,16 @@ async function getObjectID(name,type){
         'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
       }
     });
-    ans = await response.json()
-    id = ans.id.id
-    return id
+    let ans = await response.json()
+    if(typeof ans.id != 'undefined')
+      return ans.id.id
+    else  
+      return false
 }
 
 async function getAllObjectKeys(id,type){
+  if(id == null || type == null || typeof type == 'undefined'|| typeof name == 'undefined')
+    return false
   var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/"+type.toUpperCase()+"/"+id+"/keys/attributes"
 
   let getObjectKeys = await fetch(url,{
@@ -45,6 +53,8 @@ async function getAllObjectKeys(id,type){
  * @param {String} keys
  */
  async function objectIDandKeys(name,type,keys){
+  if(id == null || type == null || typeof type == 'undefined'|| typeof name == 'undefined')
+      return false
   var id = await getObjectID(name,type);
 
   if(keys == null)
@@ -136,7 +146,7 @@ async function allObjectsIDbyType(type,entity_type){
 /**
  * If keys - null - trying to get all attributes
  * @param {String} name
- * @param {String} type
+ * @param {String} entity_type asset/device/entity_view
  * @param {String} keys
  */
 async function allObjectsIDandKeysByType(type,entity_type,keys){
@@ -150,10 +160,79 @@ async function allObjectsIDandKeysByType(type,entity_type,keys){
   return result
 }
 
+/**
+ * @param {String} name
+ * @param {String} entity_type asset/device/entity_view
+ * @param {String} direction 'to'||'from'. to = childs, from = parents
+ * @param {Integer} level int if 0 or null - all levels 
+ */
+async function getRelations(name, entity_type, direction, level){
+  if (level === 0)
+    level = 3
+  var id = await getObjectID(name,entity_type)
+  if(!id)
+    return false
+  direction = direction.toLowerCase()
+  if(direction == 'to')
+    var url = "http://" + TB_HOST + ':' + TB_PORT + "/api/relations/info?fromId=" +id+ "&fromType="+entity_type.toUpperCase();
+  else if (direction == 'from')
+    var url = "http://" + TB_HOST + ':' + TB_PORT + "/api/relations/info?toId=" +id+ "&toType="+entity_type.toUpperCase();
+  else 
+    return "incorrect direction"
+
+  let getAllRelated = await fetch(url,{
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
+    }
+    });
+    //2ceacf40-78d3-11ea-a1c7-d1e730c27b32
+    //2ce83730-78d3-11ea-a1c7-d1e730c27b32
+    //http://84.201.141.244:8080/api/relations/info?fromId=2ceacf40-78d3-11ea-a1c7-d1e730c27b32&fromType=ENTITY_VIEW
+  var ans = await getAllRelated.json();
+  var answer = []
+    for(let i=0;i<ans.length;i++){
+      answer.push({
+        id:           ans[i][direction].id,
+        name:         ans[i][direction+'Name'],
+        entity_type:  ans[i][direction].entityType
+      })
+    }
+  if(level == 1)
+    return answer
+  
+  
+    /*
+      for(let i=0; i< answer.length; i++){
+        //answer[i].childs = []
+        for (let ii=level; ii>0; ii--){   
+        //console.log(answer[i])
+        answer[i].childs = await getRelations(answer[i].name,answer[i].entity_type,direction,ii)
+        //console.log(answer[i].childs )
+      }
+    }
+*/
+  
+  for(let i=0; i< answer.length; i++){
+    answer[i].childs = await getRelations(answer[i].name,answer[i].entity_type,direction,1)
+  }
+  
+  if (level == 2)
+    return answer
+
+  for(let i=0; i< answer.length; i++){
+    for(let ii=0;ii<answer[i].childs.length;ii++){
+      answer[i].childs[ii].childs = await getRelations(answer[i].childs[ii].name,answer[i].childs[ii].entity_type,direction,1)
+    }
+  }
+  return answer
+}
 
 module.exports = {
-    objectID: getObjectID,
-    objectIDandKeys: objectIDandKeys,
-    allObjectsIDbyType:allObjectsIDbyType,
-    allObjectsIDandKeysByType: allObjectsIDandKeysByType,
+    objectID:                   getObjectID,
+    objectIDandKeys:            objectIDandKeys,
+    allObjectsIDbyType:         allObjectsIDbyType,
+    allObjectsIDandKeysByType:  allObjectsIDandKeysByType,
+    relations:                  getRelations,
 };
