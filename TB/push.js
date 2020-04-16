@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const get = require('./get.js')
+const axios = require('axios');
 
 /**
  * @param {String} type Such as Mobile, PC, not asset/device
@@ -163,59 +164,63 @@ async function createRelation(name, entity_type, parentName, parentType) {
         return false
 }
 
-async function pushAttributesAndTelemetry(name, entity_type, attributes, telemetry, ts) {
+// Add OPTIONS for development debug
+// in prod environment variables will be used
+async function pushAttributes(name, entity_type, attributes, telemetry = null, ts = null, options = null) {
+    const id = await get.objectID(name, entity_type);
 
+    if ((telemetry === null || telemetry === undefined) && (ts === null || telemetry === undefined)) {
+        console.log("Attributes!");
 
-    /*
-    let id = await get.objectID(name, entity_type)
-    var url = "http://" + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + entity_type.toUpperCase() + "/" + id + "/attributes/SERVER_SCOPE";
-    let post = await fetch(url, {
-        method: 'post',
-        body: JSON.stringify(attributes),
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
-        }
-    });
-    var ans = await post.text();
-    if (ans == '')
-        return true
-    else
-        return false
-        */
-}
-
-async function pushTelemetry(options) {
-    const entityToken = await postgres_api.get.getEntityToken(options.entityId);
-
-    if (entityToken.length === 0) {
-        console.error("Empty entity token!");
-        return;
-    }
-
-    const url = "http://" + options.TB_HOST + ':' + options.TB_PORT + `/api/v1/${entityToken}/telemetry`;
-    const payload = {
-        method: 'post',
-        url: url,
-        data: JSON.stringify({ "ts": options["ts"], "values": options.telemetry }),
-        headers: {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-        }
-    };
-
-    try {
-        const response = await axios(payload);
-        if (response.code === 200){
+        const url = "http://" + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + entity_type.toUpperCase() + "/" + id + "/attributes/SERVER_SCOPE";
+        const post = await fetch(url, {
+            method: 'post',
+            body: JSON.stringify(attributes),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
+            }
+        });
+        const ans = await post.text();
+        if (ans == '')
             return true;
+        else
+            return false;
+    }
+
+    if ((telemetry !== null || typeof telemetry !== "undefined")) {
+        console.log("Telemetry!");
+        const deviceToken = await get.getDeviceToken(id);
+        // If error happened, getDeviceToken() return false
+        if (!deviceToken) {
+            console.error("Error while get device access token!");
+            return false;
         }
-    } catch (error) {
-        console.error("Error: ", error);
-        return false;
+
+        const url = "http://" + options.TB_HOST + ':' + options.TB_PORT + `/api/v1/${deviceToken}/telemetry`;
+        const payload = {
+            method: 'post',
+            url: url,
+            data: JSON.stringify({ "ts": ts || Date.now(), "values": telemetry }),
+            headers: {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+            }
+        };
+
+        try {
+            const response = await axios(payload);
+            if (response.status === 200) {
+                return true;
+            }
+        } catch (error) {
+            console.error("Error: ", error);
+            return false;
+        }
+
+        return true;
     }
 }
-
-
 
 module.exports = {
     createRelation: createRelation,
