@@ -37,6 +37,17 @@ function toPostgresID(tb_uuid) {
     return id;
 }
 
+async function getEntityToken(entityId){
+    const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
+    try{
+        const pgId = toPostgresID(entityId);
+        var entityToken = await sql`SELECT credentials_id FROM device_credentials WHERE device_id = ${pgId}`
+    } catch(error){
+        console.error(error);
+    }
+    
+    return entityToken[0].credentials_id;
+}
 async function getAttrsAndValuesById(entityId) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try {
@@ -166,5 +177,6 @@ module.exports =
         allObjectsIDbyType: getAllObjectsIDbyType,
         allObjectsIDandKeysByType: getAllObjectsIDandKeysByType,
         getAttrsAndValuesById: getAttrsAndValuesById,
+        getEntityToken: getEntityToken,
     }
 }
