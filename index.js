@@ -26,7 +26,7 @@ async function createConnection(options) {
     TB_PORT = process.env.TB_PORT
     TB_USERNAME = process.env.TB_USERNAME;
     TB_PASSWORD = process.env.TB_PASSWORD;
-    // await token()
+    await token()
     await postgres_api.createPostgresConnection();
 }
 
@@ -154,10 +154,19 @@ async function extendChildAttrs(options) {
         }
     }
 }
+
+
+async function pushTelemetry(options){
+    const entityToken = await postgres_api.get.getEntityToken(options.entityId);
+    console.log(entityToken);
+
+    return;
+}
 module.exports = {
     get: TB_get_api,
     postgres: postgres_api,
     token: token,
     createConnection: createConnection,
     extendChildAttrs: extendChildAttrs,
+    pushTelemetry: pushTelemetry,
 };
