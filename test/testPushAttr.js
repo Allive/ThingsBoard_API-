@@ -12,10 +12,11 @@ async function main() {
         TB_PORT: config.parsed.TB_PORT,
         TB_USERNAME: config.parsed.TB_USERNAME,
         TB_PASSWORD: config.parsed.TB_PASSWORD,
-        "entityId": "cc8d9900-7fc8-11ea-9611-715a8ddc55dc",
+        "entityId": "f6d6d160-7fd0-11ea-8b96-39ec393585a5",
+        "ts": Date.now(),
         "telemetry": {
-            "someKey": 123,
-            "anotherKey": 421,
+            "someKey": "123",
+            "anotherKey": "421",
    },
 }
 
