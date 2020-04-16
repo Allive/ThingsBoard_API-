@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const axios = require('axios');
 
 async function getObjectID(name, type) {
   if (name == null || type == null)
@@ -231,7 +232,6 @@ async function getRelations(name, entity_type, direction, level) {
 
 async function getDeviceToken(deviceId) {
   const tokenUrl = "http://" + process.env.TB_HOST + ':' + process.env.TB_PORT + `/api/device/${deviceId}/credentials`;
-
   const credentials = {
     "method": 'get',
     "url": tokenUrl,
@@ -243,8 +243,8 @@ async function getDeviceToken(deviceId) {
 
   try {
     const response = await axios(credentials);
-    if (response.code === 200) {
-      const token = data.credentialsId;
+    if (response.status === 200) {
+      const token = response.data.credentialsId;
       return token;
     }
   } catch (error) {
