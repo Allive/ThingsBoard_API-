@@ -108,7 +108,7 @@ async function extendChildAttrs(options) {
             // depends on options.updateAttrs
             switch (options.updateAttrs) {
                 case true:
-                    if (parentData.length !== childData.length){
+                    if (parentData.length !== childData.length) {
                         console.error("Different length of parent and child attribute array!");
                         return;
                     }
@@ -154,21 +154,10 @@ async function extendChildAttrs(options) {
         }
     }
 }
-
-
-async function pushTelemetry(options){
-    const entityToken = await postgres_api.get.getEntityToken(options.entityId);
-    console.log(entityToken);
-
-    
-
-    return;
-}
 module.exports = {
     get: TB_get_api,
     postgres: postgres_api,
     token: token,
     createConnection: createConnection,
     extendChildAttrs: extendChildAttrs,
-    pushTelemetry: pushTelemetry,
 };
