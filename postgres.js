@@ -37,6 +37,7 @@ function toPostgresID(tb_uuid) {
     return id;
 }
 
+// Get access token for device
 async function getEntityToken(entityId){
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try{
