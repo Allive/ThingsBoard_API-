@@ -1,12 +1,12 @@
 const fetch = require('node-fetch');
 const axios = require('axios');
 
-async function getObjectID(name, type) {
+async function getObjectID(name, type, tokenFlag = false) {
   if (name == null || type == null)
-    return false
+    return false;
 
-  var name = encodeURI(name)
-  name = name.replace("&", "%26")
+  let entityName = encodeURI(name);
+  entityName = entityName.replace("&", "%26");
   switch (type.toUpperCase()) {
     case "DEVICE":
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?deviceName=" + name;
@@ -25,11 +25,36 @@ async function getObjectID(name, type) {
       'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
     }
   });
+
   let ans = await response.json()
-  if (typeof ans.id != 'undefined')
-    return ans.id.id
-  else
+  if (typeof ans.id != 'undefined') {
+    // if we don't want to get token,
+    // return only id
+    if (!tokenFlag) {
+      return ans.id.id
+    }
+
+    if ((tokenFlag) && (type.toUpperCase() === "DEVICE")) {
+       const token = await getDeviceToken(ans.id.id);
+
+       if (!token){
+         // error during get token
+         return false;
+       }
+       // return complete obj
+       return {
+         "id": ans.id.id,
+         "name": ans.name,
+         "type": ans.id.entityType,
+         "device_token": token,
+       };
+    }
+
+  }
+  else {
     return false
+  }
+
 }
 
 async function getAllObjectKeys(id, type) {
