@@ -1,20 +1,31 @@
 const fetch = require('node-fetch');
 const axios = require('axios');
 
-async function getObjectID(name, type, tokenFlag = false) {
+// base entity types
+const entityTypes = {
+  "device": "DEVICE",
+  "asset": "ASSET",
+  "view": "ENTITY_VIEW",
+};
+
+async function getObjectID(name, type, tokenFlag = false, options = null) {
   if (name == null || type == null)
     return false;
 
   let entityName = encodeURI(name);
   entityName = entityName.replace("&", "%26");
+
+  const TB_HOST = process.env.TB_HOST || options.TB_HOST;
+  const TB_PORT = process.env.TB_PORT || options.TB_PORT;
+
   switch (type.toUpperCase()) {
-    case "DEVICE":
+    case entityTypes.device:
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?deviceName=" + name;
       break;
-    case "ASSET":
+    case entityTypes.asset:
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/assets?assetName=" + name;
       break;
-    case "ENTITY_VIEW":
+    case entityTypes.view:
       var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/entityViews?entityViewName=" + name;
       break;
   }
@@ -33,8 +44,8 @@ async function getObjectID(name, type, tokenFlag = false) {
     if (!tokenFlag) {
       return ans.id.id
     }
-
-    if ((tokenFlag) && (type.toUpperCase() === "DEVICE")) {
+    // If token exist and type is device
+    if ((tokenFlag) && (type.toUpperCase() === entityTypes.device)) {
        const token = await getDeviceToken(ans.id.id);
 
        if (!token){
