@@ -8,7 +8,7 @@ TB.get.allObjectsIDandKeysByType
 var TB = require("../index.js")
 const config = require('dotenv').config();
 
-async function main(){
+async function main() {
     // let options = {
     //     TB_HOST:'84.201.141.244',
     //     TB_PORT:'8080',
@@ -38,26 +38,26 @@ async function main(){
             "someKey": "123",
             "anotherKey": "421",
         },
-        "attributes":{
+        "attributes": {
             "attr1": "val1",
             "attr2": "val2",
         }
     }
 
     await TB.createConnection(options)
-    
+
     // var keys = ["errors", 'hardware', 'inspectionType', 'label', 'locoType','measureID', 'milage','name','ts','warnings','worker']
-/*
-    var objectID = await TB.get.objectID("e5k",'asset')
-    var objectIDandKeys = await TB.get.objectIDandKeys("Замер №1",'entity_view', null)
-    var allObjectsIDbyType = await TB.get.allObjectsIDbyType("Локомотив","asset")
-    var allObjectsIDandKeysByType = await TB.get.allObjectsIDandKeysByType("Замер","entity_view",keys)
-    */
-   //var related = await TB.get.relations("Замер №20&e5k:018-1", 'entity_view', 'to',1)
-   
+    /*
+        var objectID = await TB.get.objectID("e5k",'asset')
+        var objectIDandKeys = await TB.get.objectIDandKeys("Замер №1",'entity_view', null)
+        var allObjectsIDbyType = await TB.get.allObjectsIDbyType("Локомотив","asset")
+        var allObjectsIDandKeysByType = await TB.get.allObjectsIDandKeysByType("Замер","entity_view",keys)
+        */
+    //var related = await TB.get.relations("Замер №20&e5k:018-1", 'entity_view', 'to',1)
+
     // var related = await TB.get.relations("Замер №20", 'entity_view', 'to',3) 
 
-    
+
     // last param set to get complex object info
     /*{
         id: "0b507930-78d2-11ea-a1c7-d1e730c27b32", 
@@ -67,9 +67,19 @@ async function main(){
     }*/
 
     // if it not set, response will be TB id
-    try{
+    try {
         const result = await TB.get.objectID(options.entityName, options.entityType, true);
         console.log(result);
+    } catch (err) {
+        console.error("Error: ", err);
+    }
+
+    // set last option to true
+    // if your tb type is device
+    // to get device token
+    try {
+        const result = await TB.get.allObjectsIDbyType("123", "device", true);
+        console.log('get id by type resp: ', result);
     } catch(err){
         console.error("Error: ", err);
     }
