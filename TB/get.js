@@ -46,19 +46,19 @@ async function getObjectID(name, type, tokenFlag = false, options = null) {
     }
     // If token exist and type is device
     if ((tokenFlag) && (type.toUpperCase() === entityTypes.device)) {
-       const token = await getDeviceToken(ans.id.id);
+      const token = await getDeviceToken(ans.id.id);
 
-       if (!token){
-         // error during get token
-         return false;
-       }
-       // return complete obj
-       return {
-         "id": ans.id.id,
-         "name": ans.name,
-         "type": ans.id.entityType,
-         "device_token": token,
-       };
+      if (!token) {
+        // error during get token
+        return false;
+      }
+      // return complete obj
+      return {
+        "id": ans.id.id,
+        "name": ans.name,
+        "type": ans.id.entityType,
+        "device_token": token,
+      };
     }
 
   }
@@ -145,38 +145,57 @@ async function getObjectKeys(id, type, keys) {
 }
 
 
-async function allObjectsIDbyType(type, entity_type) {
+async function allObjectsIDbyType(customType, tbType, tokenFlag = false, options = null) {
+  const TB_HOST = process.env.TB_HOST || options.TB_HOST;
+  const TB_PORT = process.env.TB_PORT || options.TB_PORT;
 
-  switch (entity_type.toUpperCase()) {
-    case 'ASSET':
-      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/assets?limit=999999999&textSearch=&type=" + encodeURI(type)
+  switch (tbType.toUpperCase()) {
+    case entityTypes.asset:
+      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/assets?limit=999999999&textSearch=&type=" + encodeURI(customType)
       break;
-    case 'DEVICE':
-      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?limit=999999999&textSearch=&type=" + encodeURI(type)
+    case entityTypes.device:
+      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?limit=999999999&textSearch=&type=" + encodeURI(customType)
       break;
-    case 'ENTITY_VIEW':
-      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/entityViews?limit=999999999&textSearch=&type=" + encodeURI(type)
+    case entityTypes.view:
+      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/entityViews?limit=999999999&textSearch=&type=" + encodeURI(customType)
       break;
+    default:
+      return { "error": `Not find ids for custom type ${type}, TB type ${entity_type}` }
   }
 
-  let getAllObjectsID = await fetch(url, {
+  const response = await fetch(url, {
     method: 'get',
     headers: {
       'Content-Type': 'application/json',
       'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
     }
   });
-  var ans = await getAllObjectsID.json();
-  ans = ans.data
-  var result = []
-  for (let i = 0; i < ans.length; i++) {
+  const ans = await response.json();
+  const data = ans.data
+  // an array 
+  let result = [];
+  
+  for (let i = 0; i < data.length; i++) {
     result.push({
-      id: ans[i].id.id,
-      name: ans[i].name,
-      type: ans[i].type,
-    }
-    )
+      id: data[i].id.id,
+      name: data[i].name,
+      type: data[i].type,
+    });
   }
+  // Set device token for response if it's device and tokenFlag is true
+  if (tokenFlag && tbType.toUpperCase() === entityTypes.device){
+    for(let i = 0; i < result.length; i++){
+      const token = await getDeviceToken(result[i].id);
+      console.log(token);
+
+      if (!tokenFlag){
+        continue
+      }
+
+      result[i].deviceToken = token;
+    }
+  }
+
   return result
 }
 
