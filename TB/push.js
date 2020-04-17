@@ -167,6 +167,9 @@ async function createRelation(name, entity_type, parentName, parentType) {
 // Add OPTIONS for development debug
 // in prod environment variables will be used
 async function pushAttributes(name, entity_type, attributes, telemetry = null, ts = null, options = null) {
+
+    // if you want to get token and detailed info about entity
+    // See how get.objectID()
     const id = await get.objectID(name, entity_type);
     if ((telemetry === null || telemetry === undefined) && (ts === null || telemetry === undefined)) {
         console.log("Attributes!");
