@@ -49,10 +49,11 @@ async function getEntityToken(entityId){
     
     return entityToken[0].credentials_id;
 }
-async function getAttrsAndValuesById(entityId) {
+// Get attributes according to attributeKeys (array of keys)
+async function getAttrsAndValuesById(entityId, attributeKeys) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try {
-        var outputAttrs = await sql`SELECT entity_type, entity_id, attribute_type, attribute_key, bool_v, str_v, long_v, dbl_v, last_update_ts FROM attribute_kv where entity_id = ${entityId} ORDER BY attribute_type DESC`;
+        var outputAttrs = await sql`SELECT ${sql(attributeKeys)} FROM attribute_kv where entity_id = ${entityId} ORDER BY attribute_type DESC`;
     } catch (error) {
         console.error(error);
     }
