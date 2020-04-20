@@ -65,7 +65,6 @@ async function getAttrsAndValuesById(entityId, attributeKeys) {
 }
 
 async function insertIntoAttrsKeysVals(dataToWrite) {
-    console.log('data ', dataToWrite)
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try {
         var insertResponse = await sql`insert into attribute_kv ${sql(dataToWrite,
