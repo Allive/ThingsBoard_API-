@@ -72,8 +72,8 @@ async function extendChildAttrs(options) {
     const childId = postgres_api.toPostgresID(options.child_id);
     const childType = options.child_type;
 
-    const parentAttrs = await postgres_api.get.getAttrsAndValuesById(parentId);
-    const childAttrs = await postgres_api.get.getAttrsAndValuesById(childId);
+    const parentAttrs = await postgres_api.get.getAttrsAndValuesById(parentId, options.attributeKeys);
+    const childAttrs = await postgres_api.get.getAttrsAndValuesById(childId, options.attributeKeys);
 
     const parentAttrsValues = funcs.makeAttrsValuesObj(parentAttrs);
     const childAttrsValues = funcs.makeAttrsValuesObj(childAttrs);
