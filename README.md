@@ -26,6 +26,8 @@ Promise like implementation
 - [List Postgres Functions](#listpostgresfunctions)
     - [postgres.get.allObjectsIDbyType](#postgresgetallobjectsidbytype)
     - [postgres.get.allObjectsIDandKeysByType](#postgresgetallobjectsidandkeysbytype)
+- [List of unclassified functions](#listofunclassifiedfunctions)
+    - [Extend child attributes by parent](#extendchildattrs)
 
 
 <!-- /TOC -->
@@ -420,14 +422,20 @@ Result
 
 ___
 
-#### postgres.get.getAttrsAndValuesById(entity_id) - get attributes keys and values for future assigning to child
+#### postgres.get.getAttrsAndValuesById(entity_id, attributeKeys) - get attributes keys and values according to array of attributeKeys
+
+#### Information
+ - This function is mostly used with `extentChildAttr()` [See index.js](./index.js), so it returns data for future extending attributes of child or updating them,
+ that's why all values (bool_v, str_v and etc.) return for each `attribute_key`
+
+ - For getting 
 
 ##### Steps: 
- - convert Thingsboard UUID to Postgres entity_id
- - Use postgres.toPostgresID(thingsboard_uuid) for converting
+ - convert Thingsboard UUID to Postgres entity_id; Use postgres.toPostgresID(thingsboard_uuid) for converting
 
 ##### List of options:
- - entity_id - is `string`
+ - entity_id - `string`
+ - attributeKeys - `array`  
 
 ##### Response:
 ```js
@@ -456,13 +464,19 @@ ____
 ##### List of options:
  - thingsboard_uuid - `string`
 
+#### Response:
+ - postres id - `string`
+
 
 ___
 
-#### postgres.insertIntoAttrsKeysVals(dataToWrite) - insert data into attribute_kv
+#### postgres.insertIntoAttrsKeysVals(dataToWrite) - insert data into `attribute_kv` table
+
+##### Information:
+ - Column names are define in object
 
 ##### List of options:
- - dataToWrite - is `array of objects`
+ - dataToWrite - `array of objects`
 ```js
 [
   {
@@ -495,10 +509,20 @@ ___
 
 ___
 
-### postgres.updateAttrsKeysAndVals(attributeObj) - Update child attributes keys and values based on parent attributes
+### postgres.updateAttrsKeysAndVals(attributeObj) - Update values (below) according to attributeObj
+```
+ - entity_type
+ - attribute_type
+ - attribute_key
+ - bool_v
+ - str_v
+ - long_v
+ - dbl_v
+ - last_update_ts
+```
 
 ##### List of options:
- - attributeObj is  `object`
+ - attributeObj - `object`
 ```js
   {
     entity_type: 'DEVICE',
@@ -513,32 +537,34 @@ ___
   }
 ```
 ##### Response:
- - To check if data was updated `compare target count with db update response count`
-
+ - To check if data was updated successfully count of entitities to update with update response count. Example for 1 obj:
+```js
+[ count: 1, command: 'UPDATE' ]
+```
+___
 
 # List of unclassified functions
 
-### extendChildAttrs(options) - Extend child attributes by parent attributes
+### extendChildAttrs (options) - Extend child attributes by parent attributes
+
+### Information:
+ - `parent_id`, `child_id`, `child_type`, `attribute_keys` are essential properties!
+ - Set necessary attribute keys in `options.attributeKeys`
 
 ##### List of options:
- - options is an `object`
+ - options - `object`
 ```js
 {
-  parent_id": "82c16090-fbe3-11e9-a033-2dde0dc34203",
-  "child_id": "aaba34b0-6d07-11ea-94de-3ddf86487a77",
-  "child_type": "DEVICE",
-  "POSTGRES_HOST": "host",
-  "POSTGRES_PORT": "port",
-  "POSTGRES_USERNAME": "username",
-  "POSTGRES_PASSWORD": "pass",
-  "POSTGRES_DATABASE": "database",
-  "updateAttrs": "false"
+    "parent_id": "some_thingsboard_id",
+    "child_id": "some_thingsboard_id",
+    "child_type": "DEVICE",
+    "attributeKeys": ['attribute_test_april2020',   'Отсутствие программы', 'inactivityAlarmTime', 'lastActivityTime', 'active'],
+    "updateAttrs": false,
 }
 ```
-
 ##### Steps:
  - If you want to add not existed attributes before to child set `updateAttrs` to `false`
- - For updating child attributes by parents attributes set `updateAttrs` to `true`
+ - For updating child attributes using parent data, set `updateAttrs` to `true`
 
 ##### Reponse:
  - Function doesn't return any data!
