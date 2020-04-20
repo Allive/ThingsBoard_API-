@@ -186,8 +186,6 @@ async function allObjectsIDbyType(customType, tbType, tokenFlag = false, options
   if (tokenFlag && tbType.toUpperCase() === entityTypes.device){
     for(let i = 0; i < result.length; i++){
       const token = await getDeviceToken(result[i].id);
-      console.log(token);
-
       if (!tokenFlag){
         continue
       }
