@@ -38,22 +38,25 @@ function toPostgresID(tb_uuid) {
 }
 
 // Get access token for device
-async function getEntityToken(entityId){
+async function getEntityToken(entityId) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
-    try{
+    try {
         const pgId = toPostgresID(entityId);
         var entityToken = await sql`SELECT credentials_id FROM device_credentials WHERE device_id = ${pgId}`
-    } catch(error){
+    } catch (error) {
         console.error(error);
     }
-    
+
     return entityToken[0].credentials_id;
 }
 // Get attributes according to attributeKeys (array of keys)
 async function getAttrsAndValuesById(entityId, attributeKeys) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try {
-        var outputAttrs = await sql`SELECT ${sql(attributeKeys)} FROM attribute_kv where entity_id = ${entityId} ORDER BY attribute_type DESC`;
+        var outputAttrs = await sql`SELECT entity_type, entity_id, attribute_type, attribute_key, bool_v, str_v, long_v, dbl_v, last_update_ts 
+        FROM attribute_kv where entity_id = ${entityId}  
+        AND attribute_key in (${attributeKeys})
+        ORDER BY attribute_type DESC`;
     } catch (error) {
         console.error(error);
     }
@@ -80,8 +83,8 @@ async function updateAttrsKeysAndVals(attributeObj) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig);
     try {
         var updateResponse = await sql`update attribute_kv set ${
-            sql(attributeObj, 'entity_type', 'entity_id', 'attribute_type', 'attribute_key', 'bool_v', 'str_v', 'long_v', 'dbl_v', 'last_update_ts')    
-        } where entity_id = ${ attributeObj["entity_id"] } and attribute_key = ${attributeObj.attribute_key}`;
+            sql(attributeObj, 'entity_type', 'entity_id', 'attribute_type', 'attribute_key', 'bool_v', 'str_v', 'long_v', 'dbl_v', 'last_update_ts')
+            } where entity_id = ${attributeObj["entity_id"]} and attribute_key = ${attributeObj.attribute_key}`;
     } catch (error) {
         console.error(error);
     }
