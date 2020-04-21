@@ -313,4 +313,5 @@ module.exports = {
   allObjectsIDandKeysByType: allObjectsIDandKeysByType,
   relations: getRelations,
   getDeviceToken: getDeviceToken,
+  getObjectKeys: getObjectKeys
 };

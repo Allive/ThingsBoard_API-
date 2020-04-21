@@ -49,6 +49,7 @@ async function main() {
     var keys = ["errors", 'hardware', 'inspectionType', 'label', 'locoType','measureID', 'milage','name','ts','warnings','worker']
     
         var objectID = await TB.get.objectID("e5k",'asset')
+        var objectKeys = await TB.get.getObjectKeys(objectID,'asset','qtyWheelSets,qtyErrors,qtyWarnings')
         var objectIDandKeys = await TB.get.objectIDandKeys("Замер №1",'entity_view', null)
         var allObjectsIDbyType = await TB.get.allObjectsIDbyType("Локомотив","asset")
         var allObjectsIDandKeysByType = await TB.get.allObjectsIDandKeysByType("Замер","entity_view",keys)
