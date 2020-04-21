@@ -20,13 +20,13 @@ async function getObjectID(name, type, tokenFlag = false, options = null) {
 
   switch (type.toUpperCase()) {
     case entityTypes.device:
-      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?deviceName=" + name;
+      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/devices?deviceName=" + entityName;
       break;
     case entityTypes.asset:
-      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/assets?assetName=" + name;
+      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/assets?assetName=" + entityName;
       break;
     case entityTypes.view:
-      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/entityViews?entityViewName=" + name;
+      var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/tenant/entityViews?entityViewName=" + entityName;
       break;
   }
 
@@ -69,7 +69,7 @@ async function getObjectID(name, type, tokenFlag = false, options = null) {
 }
 
 async function getAllObjectKeys(id, type) {
-  if (id == null || type == null || typeof type == 'undefined' || typeof name == 'undefined')
+  if (type == null || typeof type == 'undefined' || typeof id == 'undefined' || id === null || id === false)
     return false
   var url = 'http://' + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + type.toUpperCase() + "/" + id + "/keys/attributes"
 
@@ -90,7 +90,7 @@ async function getAllObjectKeys(id, type) {
 * @param {String} keys
 */
 async function objectIDandKeys(name, type, keys) {
-  if (id == null || type == null || typeof type == 'undefined' || typeof name == 'undefined')
+  if (type == null || typeof type == 'undefined' || typeof name == 'undefined')
     return false
   var id = await getObjectID(name, type);
 

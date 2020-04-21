@@ -6,6 +6,7 @@ async function main(){
         TB_USERNAME:'kp@2050.digital',
         TB_PASSWORD:'aPb79AsA',
         POSTGRES_HOST:"84.201.141.244",
+        POSTGRES_DATABASE:"thingsboard",
         POSTGRES_PORT:"5432",
         POSTGRES_USERNAME: "postgres",
         POSTGRES_PASSWORD:"postgres123456"

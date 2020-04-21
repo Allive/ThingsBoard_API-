@@ -20,6 +20,7 @@ async function createConnection(options) {
     process.env.TB_USERNAME = options.TB_USERNAME;
     process.env.TB_PASSWORD = options.TB_PASSWORD;
     process.env.POSTGRES_HOST = options.POSTGRES_HOST;
+    process.env.PG_DATABASE= options.POSTGRES_DATABASE;
     process.env.POSTGRES_PORT = options.POSTGRES_PORT
     process.env.POSTGRES_USERNAME = options.POSTGRES_USERNAME;
     process.env.POSTGRES_PASSWORD = options.POSTGRES_PASSWORD;

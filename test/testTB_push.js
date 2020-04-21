@@ -18,7 +18,7 @@ async function main(){
     }
 
     let parentKeys = ["keyTestParent","keyTestParent2"]
-    /*
+    
     console.log(await TB.push.pushAttributes("Полигон тест","asset",{keyTestParent:"qqq",keyTestParent2:"www"}))
     
     console.log(await TB.push.createRelation("Тестовое депо",'asset',"Полигон тест",'asset'))
@@ -28,7 +28,7 @@ async function main(){
     console.log(await TB.push.createEntity("Test Asset2",'test',attributes,"asset","Полигон тест","asset",parentKeys,true))
     
     console.log(await TB.push.createEntityView("Test EntityView4",'test',attributes,"Полигон тест","asset",parentKeys,true))
-    */
+    
     console.log(await TB.push.createEntity("Test DeviceNull_7",'test',attributes,"device",null,null,null,false))
     console.log(await TB.push.createEntity("Test DeviceNull_8",'test',null,"device",null,null,null,false))
     console.log(await TB.push.createEntity("Test DeviceNull_9",'test',attributes,"device","Полигон тест","asset",null,true))
