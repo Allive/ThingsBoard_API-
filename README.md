@@ -26,6 +26,8 @@ Promise like implementation
 - [List Postgres Functions](#listpostgresfunctions)
     - [postgres.get.allObjectsIDbyType](#postgresgetallobjectsidbytype)
     - [postgres.get.allObjectsIDandKeysByType](#postgresgetallobjectsidandkeysbytype)
+- [List of unclassified functions](#listofunclassifiedfunctions)
+    - [Extend child attributes by parent](#extendchildattrs)
 
 
 <!-- /TOC -->
@@ -417,3 +419,152 @@ Result
     }
 ]
 ```
+
+___
+
+#### postgres.get.getAttrsAndValuesById(entity_id, attributeKeys) - get attributes keys and values according to array of attributeKeys
+
+#### Information
+ - This function is mostly used with `extentChildAttr()` [See index.js](./index.js), so it returns data for future extending attributes of child or updating them,
+ that's why all values (bool_v, str_v and etc.) return for each `attribute_key`
+
+ - For getting 
+
+##### Steps: 
+ - convert Thingsboard UUID to Postgres entity_id; Use postgres.toPostgresID(thingsboard_uuid) for converting
+
+##### List of options:
+ - entity_id - `string`
+ - attributeKeys - `array`  
+
+##### Response:
+```js
+[
+...,
+ {
+    entity_type: 'DEVICE',
+    entity_id: '1e9fbe382c16090a0332dde0dc34203',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'attribute_test_april2020',
+    bool_v: false,
+    str_v: '',
+    long_v: 0,
+    dbl_v: 0,
+    last_update_ts: null
+  },
+...
+]
+```
+
+____
+
+
+#### postgres.toPostgresID(thingsboard_uuid) - convert Thingsboard UUID to Postgres ID
+
+##### List of options:
+ - thingsboard_uuid - `string`
+
+#### Response:
+ - postres id - `string`
+
+
+___
+
+#### postgres.insertIntoAttrsKeysVals(dataToWrite) - insert data into `attribute_kv` table
+
+##### Information:
+ - Column names are define in object
+
+##### List of options:
+ - dataToWrite - `array of objects`
+```js
+[
+  {
+    entity_type: 'DEVICE',
+    entity_id: '1ea6d07aaba34b094de3ddf86487a77',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'test_attr_key',
+    bool_v: null,
+    str_v: null,
+    long_v: null,
+    dbl_v: null,
+    last_update_ts: 1586949836446
+  },
+  {
+    entity_type: 'DEVICE',
+    entity_id: '1ea6d07aaba34b094de3ddf86487a77',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'Работа по программе',
+    bool_v: null,
+    str_v: null,
+    long_v: null,
+    dbl_v: null,
+    last_update_ts: 1586949836446
+  },
+]
+```
+
+##### Response:
+ - To check if data was written to db `compare insert count with response count`
+
+___
+
+### postgres.updateAttrsKeysAndVals(attributeObj) - Update values (below) according to attributeObj
+```
+ - entity_type
+ - attribute_type
+ - attribute_key
+ - bool_v
+ - str_v
+ - long_v
+ - dbl_v
+ - last_update_ts
+```
+
+##### List of options:
+ - attributeObj - `object`
+```js
+  {
+    entity_type: 'DEVICE',
+    entity_id: '1ea6d07aaba34b094de3ddf86487a77',
+    attribute_type: 'CLIENT_SCOPE',
+    attribute_key: 'Работа по программе',
+    bool_v: null,
+    str_v: null,
+    long_v: null,
+    dbl_v: null,
+    last_update_ts: 1586949836446
+  }
+```
+##### Response:
+ - To check if data was updated successfully count of entitities to update with update response count. Example for 1 obj:
+```js
+[ count: 1, command: 'UPDATE' ]
+```
+___
+
+# List of unclassified functions
+
+### extendChildAttrs (options) - Extend child attributes by parent attributes
+
+### Information:
+ - `parent_id`, `child_id`, `child_type`, `attribute_keys` are essential properties!
+ - Set necessary attribute keys in `options.attributeKeys`
+
+##### List of options:
+ - options - `object`
+```js
+{
+    "parent_id": "some_thingsboard_id",
+    "child_id": "some_thingsboard_id",
+    "child_type": "DEVICE",
+    "attributeKeys": ['attribute_test_april2020',   'Отсутствие программы', 'inactivityAlarmTime', 'lastActivityTime', 'active'],
+    "updateAttrs": false,
+}
+```
+##### Steps:
+ - If you want to add not existed attributes before to child set `updateAttrs` to `false`
+ - For updating child attributes using parent data, set `updateAttrs` to `true`
+
+##### Reponse:
+ - Function doesn't return any data!
