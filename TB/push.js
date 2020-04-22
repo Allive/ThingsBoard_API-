@@ -19,11 +19,13 @@ async function createEntity(name, type, attributes, entity_type, parentName, par
             parentKeys = [parentKeys]
     }
 
-    var parentAttributes = await get.objectIDandKeys(parentName, parentType)
-    for (let key in parentAttributes) {
-        if (key == 'id' || key == 'name' || key == 'type')
-            continue;
-        attributes[key] = parentAttributes[key]
+    if(attributes !== false) {
+        var parentAttributes = await get.objectIDandKeys(parentName, parentType)
+        for (let key in parentAttributes) {
+            if (key == 'id' || key == 'name' || key == 'type')
+                continue;
+            attributes[key] = parentAttributes[key]
+        }
     }
     switch (entity_type.toUpperCase()) {
         case "DEVICE":
@@ -172,8 +174,6 @@ async function pushAttributes(name, entity_type, attributes, telemetry = null, t
     // See how get.objectID()
     const id = await get.objectID(name, entity_type);
     if ((telemetry === null || telemetry === undefined) && (ts === null || telemetry === undefined)) {
-        console.log("Attributes!");
-
         const url = "http://" + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + entity_type.toUpperCase() + "/" + id + "/attributes/SERVER_SCOPE";
         const post = await fetch(url, {
             method: 'post',
