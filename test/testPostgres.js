@@ -5,11 +5,11 @@ async function main(){
         TB_PORT:'8080',
         TB_USERNAME:'kp@2050.digital',
         TB_PASSWORD:'aPb79AsA',
-        POSTGRES_HOST:"84.201.141.244",
-        POSTGRES_DATABASE:"thingsboard",
-        POSTGRES_PORT:"5432",
-        POSTGRES_USERNAME: "postgres",
-        POSTGRES_PASSWORD:"postgres123456"
+        PG_HOST:"84.201.141.244",
+        PG_DATABASE:"thingsboard",
+        PG_PORT:"5432",
+        PG_USERNAME: "postgres",
+        PG_PASSWORD:"postgres123456"
     }
     await TB.createConnection(options)
     var keys = ["errors", 'hardware', 'inspectionType', 'label', 'locoType','measureID', 'milage','name','ts','warnings','worker']

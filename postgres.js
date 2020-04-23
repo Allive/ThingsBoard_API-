@@ -7,11 +7,11 @@ async function createPostgresConnection() {
     {
         timeout: 1, // get idle connection
         evict: 2000, // it actualy removes the idle connection
-        host: process.env.POSTGRES_HOST,         // Postgres ip address or domain name
-        port: process.env.POSTGRES_PORT,       // Postgres server port
+        host: process.env.PG_HOST,         // Postgres ip address or domain name
+        port: process.env.PG_PORT,       // Postgres server port
         database: process.env.PG_DATABASE,         // Name of database to connect to
-        username: process.env.POSTGRES_USERNAME,         // Username of database user
-        password: process.env.POSTGRES_PASSWORD,
+        username: process.env.PG_USERNAME,         // Username of database user
+        password: process.env.PG_PASSWORD,
     }
 
     return
@@ -95,7 +95,7 @@ async function getAllObjectsIDbyType(type, entity_type) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig)
 
     const data = await sql`
-        SELECT name,entity_type,id from ${sql(entity_type)}
+        SELECT * from ${sql(entity_type)}
         WHERE type = ${type} ORDER BY id DESC `
 
     for (let i = 0; i < data.length; i++) {
@@ -109,7 +109,7 @@ async function getAllObjectsIDandKeysByType(type, entity_type, keys) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig)
 
     const data = await sql`
-        SELECT name,entity_type,id from ${sql(entity_type)}
+        SELECT * from ${sql(entity_type)}
         WHERE type = ${type} ORDER BY id DESC `
 
     var entities = []
