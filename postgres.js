@@ -109,7 +109,7 @@ async function getAllObjectsIDandKeysByType(type, entity_type, keys) {
     const sql = postgres('postgres://username:password@host:port/database', sqlConfig)
 
     const data = await sql`
-        SELECT name,entity_type,id from ${sql(entity_type)}
+        SELECT * from ${sql(entity_type)}
         WHERE type = ${type} ORDER BY id DESC `
 
     var entities = []
