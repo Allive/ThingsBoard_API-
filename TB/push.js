@@ -173,25 +173,23 @@ async function pushAttributes(name, entity_type, attributes, telemetry = null, t
     // if you want to get token and detailed info about entity
     // See how get.objectID()
     const id = await get.objectID(name, entity_type);
+
+    const url = "http://" + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + entity_type.toUpperCase() + "/" + id + "/attributes/SERVER_SCOPE";
+    const post = await fetch(url, {
+        method: 'post',
+        body: JSON.stringify(attributes),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
+        }
+    });
+    const ans = await post.text();
     if ((telemetry === null || telemetry === undefined) && (ts === null || telemetry === undefined)) {
-        const url = "http://" + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + entity_type.toUpperCase() + "/" + id + "/attributes/SERVER_SCOPE";
-        const post = await fetch(url, {
-            method: 'post',
-            body: JSON.stringify(attributes),
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Authorization': 'Bearer ' + process.env.TB_TOKEN
-            }
-        });
-        const ans = await post.text();
         if (ans == '')
             return true;
         else
             return false;
-    }
-
-    if ((telemetry !== null || typeof telemetry !== "undefined")) {
-        console.log("Telemetry!");
+    }else {
         const deviceToken = await get.getDeviceToken(id);
         // If error happened, getDeviceToken() return false
         if (!deviceToken) {
