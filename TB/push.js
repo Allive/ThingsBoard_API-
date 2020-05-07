@@ -19,7 +19,7 @@ async function createEntity(name, type, attributes, entity_type, parentName, par
             parentKeys = [parentKeys]
     }
 
-    if(attributes !== false) {
+    if(attributes !== false && parentKeys!==null && parentKeys !== false) {
         var parentAttributes = await get.objectIDandKeys(parentName, parentType)
         for (let key in parentAttributes) {
             if (key == 'id' || key == 'name' || key == 'type')
@@ -197,7 +197,7 @@ async function pushAttributes(name, entity_type, attributes, telemetry = null, t
             return false;
         }
 
-        const url = "http://" + options.TB_HOST + ':' + options.TB_PORT + `/api/v1/${deviceToken}/telemetry`;
+        const url = "http://" + TB_HOST + ':' + TB_PORT + `/api/v1/${deviceToken}/telemetry`;
         const payload = {
             method: 'post',
             url: url,
