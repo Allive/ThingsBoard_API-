@@ -168,11 +168,12 @@ async function createRelation(name, entity_type, parentName, parentType) {
 
 // Add OPTIONS for development debug
 // in prod environment variables will be used
-async function pushAttributes(name, entity_type, attributes, telemetry = null, ts = null, options = null) {
+async function pushAttributes(name = null, entity_type, attributes, telemetry = null, ts = null, options = null,id=null,deviceToken=null) {
 
     // if you want to get token and detailed info about entity
     // See how get.objectID()
-    const id = await get.objectID(name, entity_type);
+    if(id === null && deviceToken === null)
+        id = await get.objectID(name, entity_type);
 
     const url = "http://" + TB_HOST + ':' + TB_PORT + "/api/plugins/telemetry/" + entity_type.toUpperCase() + "/" + id + "/attributes/SERVER_SCOPE";
     const post = await fetch(url, {
@@ -190,7 +191,8 @@ async function pushAttributes(name, entity_type, attributes, telemetry = null, t
         else
             return false;
     }else {
-        const deviceToken = await get.getDeviceToken(id);
+        if (deviceToken === null)
+            deviceToken = await get.getDeviceToken(id);
         // If error happened, getDeviceToken() return false
         if (!deviceToken) {
             console.error("Error while get device access token!");
